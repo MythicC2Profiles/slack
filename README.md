@@ -1,6 +1,6 @@
 # slack
 
-This is a Mythic C2 Profile called slack. It uses the slack REST API to receive messages and forward them to the Mythic server. This profiles includes:
+This is a Mythic C2 Profile called slack. It uses the slack REST API to receive messages and forward them to the Mythic server. This profile supports:
 
 * Kill Dates
 * Sleep Intervals
