@@ -44,7 +44,9 @@ namespace slack_server
             //Ch
             if (Globals.serverconfig.clear_messages)
             {
+                Console.WriteLine("Clearing messages.");
                 await Globals.slackClient.ClearSlackMessages();
+                Console.WriteLine("Done clearing.");
             }
             else
             {

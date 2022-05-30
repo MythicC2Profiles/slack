@@ -211,7 +211,7 @@ namespace slack_server.Clients
                 return false;
             }
 
-            while(messages.messages.Count() > 0)
+            while(messages.messages.Count() > 10) //sometimes messages get stuck, so 10 will be our "good enough" number
             {
                 Console.WriteLine($"Clearing {messages.messages.Count()} messages.");
 
@@ -275,6 +275,7 @@ namespace slack_server.Clients
             {
                 return JsonConvert.DeserializeObject<ConversationHistoryResponse>(strResponse);
             }
+            Console.WriteLine(strResponse);
             return null;
         }
         public async Task<bool> Catchup()
