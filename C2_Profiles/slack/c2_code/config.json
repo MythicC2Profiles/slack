@@ -3,5 +3,5 @@
   "message_token": "",
   "channel_id": "",
   "debug": false,
-  "clear_messages": true
+  "clear_messages": false
 }
