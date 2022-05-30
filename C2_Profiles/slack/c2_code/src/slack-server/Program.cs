@@ -59,7 +59,13 @@ namespace slack_server
             using var socketModeClient = slackServices.GetSocketModeClient();
 
             await socketModeClient.Connect();
-            
+
+            if (!socketModeClient.Connected)
+            {
+                Console.WriteLine("Failed to connect to slack.");
+                Environment.Exit(0);
+            }
+
             Console.WriteLine("Started Server!");
             await SendLoop();
         }
