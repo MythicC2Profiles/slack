@@ -29,7 +29,6 @@ namespace slack_server.Clients
                 Console.WriteLine("Failed to join channel!");
                 Environment.Exit(0);
             }
-            //slackClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer {Globals.serverconfig.message_token}");
             ServicePointManager.DefaultConnectionLimit = 10;
         }
         public async Task<bool> DeleteMessage(string message)
@@ -111,7 +110,6 @@ namespace slack_server.Clients
                         }
                         catch
                         {
-                            //Default wait 30s
                             await Task.Delay(30000);
                         }
                         return "";
@@ -156,7 +154,6 @@ namespace slack_server.Clients
                         }
                         catch
                         {
-                            //Default wait 30s
                             await Task.Delay(30000);
                         }
                     }
@@ -207,7 +204,6 @@ namespace slack_server.Clients
         }
         public async Task<bool> ClearSlackMessages()
         {
-            //Change this to a while GetMessages().Count > 1 for when there are more than 200 messages
             ConversationHistoryResponse messages = await GetMessages();
 
             if(messages is null)
@@ -240,7 +236,6 @@ namespace slack_server.Clients
         {
             Dictionary<string, MythicMessageWrapper> messages = new Dictionary<string, MythicMessageWrapper>();
 
-            //Change this to a parallel.foreach and modify messages to be thread safe
             if (msgResponse != null)
             {
                 foreach (var message in msgResponse.messages)
