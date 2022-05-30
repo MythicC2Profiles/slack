@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using slack_server.Model;
 using slack_server.Model.Mythic;
 using slack_server.Model.Server;
@@ -22,6 +23,12 @@ namespace slack_server.Clients
 
             slackClient = new HttpClient();
             slackClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {this.message_token}");
+
+            if (!JoinChannel().Result)
+            {
+                Console.WriteLine("Failed to join channel!");
+                Environment.Exit(0);
+            }
             //slackClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer {Globals.serverconfig.message_token}");
             ServicePointManager.DefaultConnectionLimit = 10;
         }
@@ -43,7 +50,6 @@ namespace slack_server.Clients
                 //string response = await slackClients[i].UploadStringAsync(new Uri(url), data);
                 var response = await slackClient.PostAsync(url, postBody);
                 string strResponse = await response.Content.ReadAsStringAsync();
-
                 if (!String.IsNullOrEmpty(strResponse))
                 {
                     return true;
@@ -204,6 +210,11 @@ namespace slack_server.Clients
             //Change this to a while GetMessages().Count > 1 for when there are more than 200 messages
             ConversationHistoryResponse messages = await GetMessages();
 
+            if(messages is null)
+            {
+                return false;
+            }
+
             while(messages.messages.Count() > 0)
             {
                 Console.WriteLine($"Clearing {messages.messages.Count()} messages.");
@@ -263,12 +274,23 @@ namespace slack_server.Clients
         {
             var response = await slackClient.GetAsync($"https://slack.com/api/conversations.history?channel={this.channel_id}&limit=200");
             string strResponse = await response.Content.ReadAsStringAsync();
+            Dictionary<string, object> res = JsonConvert.DeserializeObject<Dictionary<string, object>>(strResponse);
 
-            return JsonConvert.DeserializeObject<ConversationHistoryResponse>(strResponse) ?? new ConversationHistoryResponse();
+            if ((bool)res["ok"])
+            {
+                return JsonConvert.DeserializeObject<ConversationHistoryResponse>(strResponse);
+            }
+            return null;
         }
         public async Task<bool> Catchup()
         {
             ConversationHistoryResponse msgResponse = await GetMessages();
+
+            if(msgResponse is null)
+            {
+                return false;
+            }
+
             Dictionary<string, MythicMessageWrapper> messages = await GetServerMessages(msgResponse);
             
             Parallel.ForEach(messages, async message =>
@@ -285,6 +307,11 @@ namespace slack_server.Clients
         {
             string reactionData = "{\"channel\":\"" + this.channel_id + "\",\"name\":\"eyes\",\"timestamp\":\"" + timestamp + "\"}";
             return await SendPost("https://slack.com/api/reactions.add", reactionData);
+        }
+        private async Task<bool> JoinChannel()
+        {
+            string data = "{\"channel\": \"" + this.channel_id + "\"}";
+            return await SendPost("https://slack.com/api/conversations.join", data);
         }
     }
 }
