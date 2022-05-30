@@ -27,7 +27,7 @@ The c2 profile handles configuration using a `config.json` file which can be mod
 * message_token
 * channel_id
 * debug
-* clear_message
+* clear_messages
 
 # Slack App Setup
 
@@ -69,3 +69,14 @@ You'll then grab a bot token and an app-level token. The app-level token can be 
 The bot token can be found under `OAuth & Permissions` and is provided to you when you install the bot to your workspace. Ensure the bot token starts with `xoxb-` it will be the value for the `message_token` parameter. 
 
 If you're creating the app manually, the bot should have the scopes outlined in the above manifest, events must be enabled, and `Socket Mode` must be enabled. 
+
+The `channel_id` can be discovered by logging into the Web version of the slack application. Navigate to the channel you want to use for your c2 and copy the last part of the URL. ex.)
+```
+https://app.slack.com/client/T01LKD0B2AW/C03F752RT5E
+```
+
+`T01LKD0B2AW` is the workspace ID, while `C03F752RT5E` is the channel ID. You'll place the channel ID in the config.json file.
+
+`debug` will display debug messages while the server is operating, however this will cause a decent hit to server performance and a lot of output. It's recommended to only use this for small bursts during testing.
+
+`clear_messages` instructs the server to clear the channel of messages before it starts, this may take some time depending on how many messages need to be deleted.
