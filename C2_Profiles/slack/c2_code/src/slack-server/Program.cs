@@ -44,7 +44,7 @@ namespace slack_server
             //Ch
             if (Globals.serverconfig.clear_messages)
             {
-                Console.WriteLine("Clearing messages.");
+                Console.WriteLine("Clearing messages before server start.");
                 await Globals.slackClient.ClearSlackMessages();
                 Console.WriteLine("Done clearing.");
             }
@@ -68,7 +68,7 @@ namespace slack_server
                 Environment.Exit(0);
             }
 
-            Console.WriteLine("Started Server!");
+            Console.WriteLine("Server started!");
             await SendLoop();
         }
         static async Task SendLoop()
