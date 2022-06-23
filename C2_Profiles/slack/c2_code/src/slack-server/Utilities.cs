@@ -5,7 +5,7 @@ namespace slack_server
 {
     public static class Utilities
     {
-        public static async Task<bool> HandleAgentMessage(MythicMessageWrapper mw)
+        public static async Task HandleAgentMessage(MythicMessageWrapper mw)
         {
             string res = await Globals.mythicClient.SendToMythic(mw.message);
 
@@ -13,7 +13,7 @@ namespace slack_server
             {
                 bool is_file = false;
 
-                if (res.Count() > 3850)
+                if (res.Length > 3850)
                 {
                     is_file = true;
                 }
@@ -25,7 +25,6 @@ namespace slack_server
                     sender_id = mw.sender_id,
                 });
             }
-            return true;
         }
     }
 }

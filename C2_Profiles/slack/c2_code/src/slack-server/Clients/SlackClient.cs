@@ -36,7 +36,7 @@ namespace slack_server.Clients
 
             string data = "{\"channel\":\"" + this.channel_id + "\",\"ts\":\"" + message + "\"}";
 
-            return await SendPost("https://slack.com/api/chat.delete", data); ;
+            return await SendPost("https://slack.com/api/chat.delete", data);
         }
         private async Task<bool> SendPost(string url, string data)
         {
@@ -49,10 +49,8 @@ namespace slack_server.Clients
                 //string response = await slackClients[i].UploadStringAsync(new Uri(url), data);
                 var response = await slackClient.PostAsync(url, postBody);
                 string strResponse = await response.Content.ReadAsStringAsync();
-                if (!String.IsNullOrEmpty(strResponse))
-                {
-                    return true;
-                }
+
+                return String.IsNullOrEmpty(strResponse) ? false : true;
             }
             catch (WebException e)
             {
@@ -91,9 +89,7 @@ namespace slack_server.Clients
             {
                 //POST Slack Message
                 var response = await slackClient.GetAsync(url);
-                string strResponse = await response.Content.ReadAsStringAsync();
-
-                return strResponse;
+                return await response.Content.ReadAsStringAsync() ?? String.Empty;
 
             }
             catch (WebException e)
@@ -112,11 +108,11 @@ namespace slack_server.Clients
                         {
                             await Task.Delay(30000);
                         }
-                        return "";
+                        return String.Empty;
                     }
                 }
             }
-            return "";
+            return String.Empty;
         }
         private async Task<bool> UploadFile(string data, MythicMessageWrapper mw)
         {
@@ -204,18 +200,18 @@ namespace slack_server.Clients
         }
         public async Task<bool> ClearSlackMessages()
         {
-            ConversationHistoryResponse messages = await GetMessages();
+            ConversationHistoryResponse slackResponse = await GetMessages();
 
-            if(messages is null)
+            if(slackResponse is null)
             {
                 return false;
             }
 
-            while(messages.messages.Count() > 10) //sometimes messages get stuck, so 10 will be our "good enough" number
+            do //sometimes messages get stuck, so 10 will be our "good enough" number
             {
-                Console.WriteLine($"Clearing {messages.messages.Count()} messages.");
+                Console.WriteLine($"Clearing {slackResponse.messages.Count()} messages.");
 
-                foreach (var message in messages.messages)
+                foreach (var message in slackResponse.messages)
                 {
                     try
                     {
@@ -224,11 +220,12 @@ namespace slack_server.Clients
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
-                    }  
+                    }
                     await Task.Delay(1000);
                 }
-                messages = await GetMessages();
-            }
+                slackResponse = await GetMessages();
+            } while (slackResponse.messages.Count() > 10);
+            
             Console.WriteLine("Finished clearing messages.");
             return true;
         }
@@ -236,7 +233,7 @@ namespace slack_server.Clients
         {
             Dictionary<string, MythicMessageWrapper> messages = new Dictionary<string, MythicMessageWrapper>();
 
-            if (msgResponse != null)
+            if (msgResponse is not null)
             {
                 foreach (var message in msgResponse.messages)
                 {
@@ -246,7 +243,7 @@ namespace slack_server.Clients
                         {
                             MythicMessageWrapper mythicMessage = JsonConvert.DeserializeObject<MythicMessageWrapper>(message.text);
 
-                            if (mythicMessage != null)
+                            if (mythicMessage is not null)
                             {
                                 messages.Add(message.ts, mythicMessage);
                             }
@@ -268,15 +265,7 @@ namespace slack_server.Clients
         private async Task<ConversationHistoryResponse> GetMessages()
         {
             var response = await slackClient.GetAsync($"https://slack.com/api/conversations.history?channel={this.channel_id}&limit=200");
-            string strResponse = await response.Content.ReadAsStringAsync();
-            Dictionary<string, object> res = JsonConvert.DeserializeObject<Dictionary<string, object>>(strResponse);
-
-            if ((bool)res["ok"])
-            {
-                return JsonConvert.DeserializeObject<ConversationHistoryResponse>(strResponse);
-            }
-            Console.WriteLine(strResponse);
-            return null;
+            return JsonConvert.DeserializeObject<ConversationHistoryResponse>(await response.Content.ReadAsStringAsync()) ?? new ConversationHistoryResponse();
         }
         public async Task<bool> Catchup()
         {

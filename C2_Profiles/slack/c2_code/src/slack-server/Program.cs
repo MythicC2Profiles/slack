@@ -24,7 +24,7 @@ namespace slack_server
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[Main] Error parsing config: {e.Message}");
+                Console.WriteLine($"[Main] Error parsing config: {e}");
                 Environment.Exit(e.HResult);
             }
 
@@ -41,7 +41,6 @@ namespace slack_server
         }
         public static async Task AsyncMain(string[] args)
         {
-            //Ch
             if (Globals.serverconfig.clear_messages)
             {
                 Console.WriteLine("Clearing messages before server start.");
@@ -82,13 +81,11 @@ namespace slack_server
                     if (curMsg.is_file)
                     {
                         //Kick off seperate thread so a long file upload doesn't force other agents to wait
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         Task.Run(async() =>
                         {
                             await Globals.slackClient.SendMessage(curMsg.message, curMsg.sender_id);
                             //Attempt 3 times and then give up.
                         });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
                     else
                     {
@@ -98,7 +95,7 @@ namespace slack_server
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"[SendLoop] {e.Message}");
+                    Console.WriteLine($"[SendLoop] {e}");
                 }
             }
         }

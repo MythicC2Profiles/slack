@@ -24,8 +24,8 @@ namespace slack_server.Model.Mythic
             {
                 HttpContent postBody = new StringContent(data);
                 var response = await mythicClient.PostAsync(url, postBody);
-                string strResponse = await response.Content.ReadAsStringAsync();
-                return strResponse;
+                
+                return await response.Content.ReadAsStringAsync();
             }
             catch (WebException ex)
             {
@@ -38,7 +38,7 @@ namespace slack_server.Model.Mythic
                 Console.WriteLine(e.StackTrace);
             };
 
-            return "";
+            return String.Empty;
         }
     }
 }

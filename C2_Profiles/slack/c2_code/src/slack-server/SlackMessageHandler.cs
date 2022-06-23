@@ -52,10 +52,11 @@ namespace slack_server
                     await Utilities.HandleAgentMessage(mw);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine($"[SlackMessageHandler] Failed to decode message: {slackEvent.Text}");
-                Console.WriteLine($"[SlackMessageHandler] Failed to decode message: {slackEvent.Type}");
+                Console.WriteLine($"[SlackMessageHandler] Failed to decode message: {e}");
+                Console.WriteLine($"[SlackMessageHandler] Text: {slackEvent.Text}");
+                Console.WriteLine($"[SlackMessageHandler] Event: {slackEvent.Type}");
             }
         }
        
