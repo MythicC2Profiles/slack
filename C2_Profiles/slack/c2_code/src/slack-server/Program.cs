@@ -11,7 +11,7 @@ namespace slack_server
         /// <summary>
         /// Main loop
         /// </summary>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {
@@ -36,11 +36,10 @@ namespace slack_server
 
             Globals.slackClient = new SlackClient(Globals.serverconfig);
             Globals.mythicClient = new MythicClient();
-            //Start the handler
-            AsyncMain(args).GetAwaiter().GetResult();
-        }
-        public static async Task AsyncMain(string[] args)
-        {
+            Globals.mythicClient.MythicMessageReady += onMythicMessageReady;
+
+
+
             if (Globals.serverconfig.clear_messages)
             {
                 Console.WriteLine("Clearing messages before server start.");
@@ -68,35 +67,18 @@ namespace slack_server
             }
 
             Console.WriteLine("Server started!");
-            await SendLoop();
+            await Task.Delay(-1);
         }
-        static async Task SendLoop()
+
+        static async void onMythicMessageReady(object sender, MythicEventArgs e)
         {
-            while (true) //This is single threaded so that we can limit impact of large amounts of messages needing to be sent
+            try
             {
-                try
-                {
-                    //This should block until a message is available.
-                    MessageQueue curMsg = Globals.outqueue.Take();
-                    if (curMsg.is_file)
-                    {
-                        //Kick off seperate thread so a long file upload doesn't force other agents to wait
-                        Task.Run(async() =>
-                        {
-                            await Globals.slackClient.SendMessage(curMsg.message, curMsg.sender_id);
-                            //Attempt 3 times and then give up.
-                        });
-                    }
-                    else
-                    {
-                        await Globals.slackClient.SendMessage(curMsg.message, curMsg.sender_id);
-                    }
-                    await Task.Delay(1000);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"[SendLoop] {e}");
-                }
+                await Globals.slackClient.SendMessage(e.message, e.sender_id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
     }

@@ -7,24 +7,7 @@ namespace slack_server
     {
         public static async Task HandleAgentMessage(MythicMessageWrapper mw)
         {
-            string res = await Globals.mythicClient.SendToMythic(mw.message);
-
-            if (!String.IsNullOrEmpty(res))
-            {
-                bool is_file = false;
-
-                if (res.Length > 3850)
-                {
-                    is_file = true;
-                }
-
-                Globals.outqueue.Add(new MessageQueue()
-                {
-                    is_file = is_file,
-                    message = res,
-                    sender_id = mw.sender_id,
-                });
-            }
+            await Globals.mythicClient.SendToMythic(mw.message, mw.sender_id);
         }
     }
 }
