@@ -13,11 +13,11 @@ namespace slack_server
         public SlackMessageHandler(ISlackApiClient slack) => _slack = slack;
         public async Task Handle(MessageEvent slackEvent)
         {
+            Console.WriteLine($"({slackEvent.Subtype})Message Received!");
             if(slackEvent.Channel != Globals.serverconfig.channel_id)
             {
                 return;
             }
-
             switch (slackEvent.Subtype)
             {
                 case "message_deleted":
@@ -29,7 +29,10 @@ namespace slack_server
                     await ProcessMessage(slackEvent);
                     break;
                 default:
-                    Console.WriteLine("Unknown Event: " + slackEvent.Subtype);
+                    if (!string.IsNullOrEmpty(slackEvent.Text))
+                    {
+                        await ProcessMessage(slackEvent);
+                    }
                     break;
             }
         }
@@ -42,7 +45,6 @@ namespace slack_server
                 if (mw.to_server)
                 {
                     await Globals.slackClient.DeleteMessage(slackEvent.Ts);
-
                     if (String.IsNullOrEmpty(mw.message))
                     {
                         //It's a file, inform Athena that we've begun processing.

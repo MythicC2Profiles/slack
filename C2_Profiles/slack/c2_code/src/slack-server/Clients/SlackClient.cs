@@ -194,7 +194,6 @@ namespace slack_server.Clients
                     username = "Server",
                     icon_emoji = ":crown:"
                 };
-
                 return await SendPost(url, JsonConvert.SerializeObject(sm));
             }
         }

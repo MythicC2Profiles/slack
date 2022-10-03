@@ -29,7 +29,7 @@ namespace slack_server.Model.Mythic
 
                 string strRes = await response.Content.ReadAsStringAsync();
                 
-                MythicEventArgs args = new MythicEventArgs(data, sender);
+                MythicEventArgs args = new MythicEventArgs(strRes, sender);
                 MythicMessageReady(this, args);
             }
             catch (WebException ex)

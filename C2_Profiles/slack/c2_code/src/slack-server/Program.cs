@@ -65,8 +65,6 @@ namespace slack_server
                 Console.WriteLine("Failed to connect to slack.");
                 Environment.Exit(0);
             }
-
-            Console.WriteLine("Server started!");
             await Task.Delay(-1);
         }
 
