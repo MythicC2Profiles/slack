@@ -29,6 +29,8 @@ The c2 profile handles configuration using a `config.json` file which can be mod
 * debug
 * clear_messages
 
+Browse to C2 Profiles, then click on the dropdown arrow next to `Start Profile`, then click `View/Edit Config` to change the above values.
+
 # Slack App Setup
 
 For ease of setup the following manifest can be used when creating a new app and installing it to a workspace:
