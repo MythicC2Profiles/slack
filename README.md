@@ -33,7 +33,15 @@ Browse to C2 Profiles, then click on the dropdown arrow next to `Start Profile`,
 
 # Slack App Setup
 
-For ease of setup the following manifest can be used when creating a new app and installing it to a workspace:
+1. Browse to https://api.slack.com/apps
+2. Click `Create New App`
+3. Choose your own workspace to add this app to on Step 1
+4. On Step 2, choose YAML, then copy the below manifest template, swapping out `NameGoesHere` for any arbitrary app name
+5. Confirm the Bot Scopes (which should read `channels:history, channels:join, chat:write, chat:write.customize, chat:write.public, files:read, files:write, reactions:read, reactions:write`), then click Create
+6. Your app has been created. Click `Install to Workspace` under `Install your app`, then select your Slack workspace.
+7. You will now be at the application page for Slack, something like https://api.slack.com/apps/APP_GUID_HERE/general?success=1
+
+For ease of setup the following YAML manifest can be used when creating a new app and installing it to a workspace:
 
 ```
 display_information:
@@ -66,19 +74,10 @@ settings:
   token_rotation_enabled: false
 ```
 
-You'll then grab a bot token and an app-level token. The app-level token can be found under `Basic Information` on the left side of your app page. It should have the `connections:write` permission and will be the value for the `subscription_token` config parameter. 
+You now have most of what you need for the slack C2 configuration.
 
-The bot token can be found under `OAuth & Permissions` and is provided to you when you install the bot to your workspace. Ensure the bot token starts with `xoxb-` it will be the value for the `message_token` parameter. 
-
-If you're creating the app manually, the bot should have the scopes outlined in the above manifest, events must be enabled, and `Socket Mode` must be enabled. 
-
-The `channel_id` can be discovered by logging into the Web version of the slack application. Navigate to the channel you want to use for your c2 and copy the last part of the URL. ex.)
-```
-https://app.slack.com/client/T01LKD0B2AW/C03F752RT5E
-```
-
-`T01LKD0B2AW` is the workspace ID, while `C03F752RT5E` is the channel ID. You'll place the channel ID in the config.json file.
-
-`debug` will display debug messages while the server is operating, however this will cause a decent hit to server performance and a lot of output. It's recommended to only use this for small bursts during testing.
-
-`clear_messages` instructs the server to clear the channel of messages before it starts, this may take some time depending on how many messages need to be deleted.
+ - For `subscription_token`, make an App-Level Token (Slack app web site -> Basic Information -> App-Level Tokens -> Generate Token and Scopes) with the `connections:write` scope, click Generate, then copy the value beginning with `xapp-`
+ - For `message_token`, browse from the main Slack app page to the `OAuth & Permissions` page, then copy the `Bot User OAuth Token` beginning with `xoxb-`
+ - For `channel_id`, log in to the web version of your Slack workspace, navigate to the channel you'd like the Slack C2 to use, then copy the last part of the URL (example: `https://app.slack.com/client/T01LKD0B2AW/C03F752RT5E` is the full URL, `T01LKD0B2AW` is the workspace ID, while `C03F752RT5E` is the channel ID)
+ - `debug` will display debug messages while the server is operating, however this will cause a decent hit to server performance and a lot of output. It's recommended to only use this for small bursts during testing.
+ - `clear_messages` instructs the server to clear the channel of messages before it starts, this may take some time depending on how many messages need to be deleted.
