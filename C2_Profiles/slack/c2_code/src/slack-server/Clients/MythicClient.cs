@@ -1,18 +1,20 @@
-﻿using System.Net;
+﻿using slack_server.Model.Server;
+using System.Net;
 
 namespace slack_server.Model.Mythic
 {
     public class MythicClient
     {
         private static HttpClient mythicClient = new HttpClient();
-
+        public delegate void MythicMessageReadyHandler(object sender, MythicEventArgs e);
+        public event EventHandler<MythicEventArgs> MythicMessageReady;
         public MythicClient()
         {
             mythicClient.DefaultRequestHeaders.Add("mythic", "slack");
             ServicePointManager.DefaultConnectionLimit = 10;
         }
 
-        public async Task<string> SendToMythic(string data)
+        public async Task SendToMythic(string data, string sender)
         {
 #if DEBUG
             string url = "http://192.168.4.201:17443/api/v1.4/agent_message";
@@ -24,8 +26,11 @@ namespace slack_server.Model.Mythic
             {
                 HttpContent postBody = new StringContent(data);
                 var response = await mythicClient.PostAsync(url, postBody);
+
+                string strRes = await response.Content.ReadAsStringAsync();
                 
-                return await response.Content.ReadAsStringAsync();
+                MythicEventArgs args = new MythicEventArgs(strRes, sender);
+                MythicMessageReady(this, args);
             }
             catch (WebException ex)
             {
@@ -37,8 +42,6 @@ namespace slack_server.Model.Mythic
                 Console.WriteLine(e.InnerException);
                 Console.WriteLine(e.StackTrace);
             };
-
-            return String.Empty;
         }
     }
 }

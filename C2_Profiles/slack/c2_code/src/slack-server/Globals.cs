@@ -11,6 +11,5 @@ namespace slack_server
         public static ServerConfig? serverconfig;
         public static SlackClient slackClient;
         public static MythicClient mythicClient;
-        public static BlockingCollection<MessageQueue> outqueue = new BlockingCollection<MessageQueue>();
     }
 }
