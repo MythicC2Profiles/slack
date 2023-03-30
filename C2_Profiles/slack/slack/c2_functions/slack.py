@@ -9,7 +9,7 @@ class Slack(C2Profile):
     author = "@checkymander"
     is_p2p = False
     is_server_routed = False
-    server_binary_path = Path(os.path.join(".", "slack", "c2_code","slack-server"))
+    server_binary_path = Path(os.path.join(".", "slack", "c2_code","server"))
     server_folder_path = Path(os.path.join(".", "slack", "c2_code"))
     parameters = [
         C2ProfileParameter(
