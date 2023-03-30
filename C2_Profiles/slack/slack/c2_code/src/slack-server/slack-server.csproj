@@ -6,6 +6,7 @@
     <RootNamespace>slack_server</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>server</AssemblyName>
 
   </PropertyGroup>
 
