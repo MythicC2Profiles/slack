@@ -13,8 +13,8 @@ FROM itsafeaturemythic/mythic_base_image:0.0.1
 WORKDIR /Mythic/
 COPY [".", "."]
 RUN python3 -m pip install mythic-container==0.2.0rc4
-WORKDIR /Mythic/slack/c2_code/src/
-RUN dir
-RUN dotnet publish -c Release -o /Mythic/slack/c2_code/
-WORKDIR /Mythic/
+# WORKDIR /Mythic/slack/c2_code/src/
+# RUN dir
+# RUN dotnet publish -c Release -o /Mythic/slack/c2_code/
+# WORKDIR /Mythic/
 CMD ["python3", "main.py"]
