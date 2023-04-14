@@ -17,7 +17,7 @@ namespace slack_server.Model.Mythic
         public async Task SendToMythic(string data, string sender)
         {
 #if DEBUG
-            string url = "http://192.168.4.201:17443/api/v1.4/agent_message";
+            string url = "http://192.168.4.216:17443/api/v1.4/agent_message";
 #else
             string url = Environment.GetEnvironmentVariable("MYTHIC_ADDRESS");
 #endif

@@ -35,7 +35,6 @@ namespace slack_server.Clients
         {
 
             string data = "{\"channel\":\"" + this.channel_id + "\",\"ts\":\"" + message + "\"}";
-
             return await SendPost("https://slack.com/api/chat.delete", data);
         }
         private async Task<bool> SendPost(string url, string data)
@@ -160,7 +159,6 @@ namespace slack_server.Clients
         public async Task<bool> SendMessage(string data, string sender_id)
         {
             string url = "https://slack.com/api/chat.postMessage";
-
             if (data.Count() > 3850)
             {
                 MythicMessageWrapper msg = new MythicMessageWrapper()
