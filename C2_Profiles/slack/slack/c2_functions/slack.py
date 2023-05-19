@@ -1,4 +1,6 @@
-from mythic_c2_container.C2ProfileBase import *
+from mythic_container.C2ProfileBase import *
+from pathlib import Path
+import os
 
 
 class Slack(C2Profile):
@@ -7,17 +9,19 @@ class Slack(C2Profile):
     author = "@checkymander"
     is_p2p = False
     is_server_routed = False
+    server_binary_path = Path(os.path.join(".", "slack", "c2_code","server"))
+    server_folder_path = Path(os.path.join(".", "slack", "c2_code"))
     parameters = [
         C2ProfileParameter(
             name="slack_channel_id",
-            description="The channel ID for the messages",
+            description="The channel ID for the messages - same as channel_id in the configuration. Feel free to make a new channel in your Slack workspace, then browse to it in a web browser and copy the Channel ID (example: https://app.slack.com/client/T01LKD0B2AW/C03F752RT5E is the full URL, T01LKD0B2AW is the workspace ID, while C03F752RT5E is the channel ID)",
             default_value="",
             #verifier_regex="",
             required=True,
         ),
         C2ProfileParameter(
             name="slack_message_token",
-            description="A Bot Token for sending messages",
+            description="A Bot Token for sending messages - same as message_token in the configuration. Should begin with xoxb-",
             default_value="",
             required=True,
         ),

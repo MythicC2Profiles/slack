@@ -16,7 +16,7 @@ namespace slack_server
             try
             {
 #if DEBUG
-                Globals.serverconfig = JsonConvert.DeserializeObject<ServerConfig>(System.IO.File.ReadAllText(@"C:\Users\scott\Desktop\slack-server-config.json"));
+                Globals.serverconfig = JsonConvert.DeserializeObject<ServerConfig>(System.IO.File.ReadAllText(@"C:\Users\scott\Documents\slack-server-config3.json"));
 
 #else
                 Globals.serverconfig = JsonConvert.DeserializeObject<ServerConfig>(System.IO.File.ReadAllText("config.json")) ?? new ServerConfig();
@@ -65,6 +65,7 @@ namespace slack_server
                 Console.WriteLine("Failed to connect to slack.");
                 Environment.Exit(0);
             }
+            Console.WriteLine("Server started.");
             await Task.Delay(-1);
         }
 
