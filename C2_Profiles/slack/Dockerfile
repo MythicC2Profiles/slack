@@ -1,4 +1,4 @@
-FROM itsafeaturemythic/mythic_base_image:0.0.1
+FROM itsafeaturemythic/mythic_python_dotnet:latest
 
 # RUN apt update && apt install wget nuget -y
 # RUN wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -12,7 +12,6 @@ FROM itsafeaturemythic/mythic_base_image:0.0.1
 
 WORKDIR /Mythic/
 COPY [".", "."]
-RUN python3 -m pip install mythic-container==0.2.0rc4
 # WORKDIR /Mythic/slack/c2_code/src/
 # RUN dir
 # RUN dotnet publish -c Release -o /Mythic/slack/c2_code/
