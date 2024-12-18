@@ -1,5 +1,8 @@
 # slack
 
+```FYSA: Currently looking for new maintainers, no agents currently support this profile and it may not even work in general.```
+
+
 This is a Mythic C2 Profile called slack. It uses the slack REST API to receive messages and forward them to the Mythic server. This profile supports:
 
 * Kill Dates
